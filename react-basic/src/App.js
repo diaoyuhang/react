@@ -1,6 +1,6 @@
 import classnames from "classnames";
 import _ from "lodash";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import "./a.css";
 
 const num = 9;
@@ -26,6 +26,20 @@ function getByType() {
   return "<span style='color:red'>未知</span>";
 }
 
+function Son(props) {
+  console.log(props.name);
+  return <div>this is Son，{props.name}</div>;
+}
+
+function Son2({ onGetSonMsg }) {
+  const msg = "this is son2 message";
+  return (
+    <div>
+      <button onClick={() => onGetSonMsg(msg)}>sendMsg</button>
+    </div>
+  );
+}
+
 function App() {
   const tabs = [
     { type: "hot", text: "最热" },
@@ -39,14 +53,33 @@ function App() {
     setType(aa);
   }
 
-  const list2 = [{ num: 1 }, { num: 3 }, { num: 2 }];
+  const [list2, setList2] = useState([{ num: 1 }, { num: 3 }, { num: 2 }]);
   const list3 = _.orderBy(list2, "num", "desc");
   console.log(list3);
 
   const [inputValue, setInputValue] = useState("");
+  const inputRef2 = useRef(null);
   var inputChangeVar = function inputChange(value) {
     console.log(value);
-    setInputValue(value + 1);
+    setInputValue(value);
+  };
+
+  const inputRef = useRef(null);
+
+  const addNumVar = function addNum() {
+    setList2([...list2, { num: inputRef.current.value }]);
+  };
+
+  const clearInputValueVar = function () {
+    console.log("clearInputValueVar");
+    setInputValue("");
+    inputRef2.current.focus();
+  };
+  const [sonMsg, setSonMsg] = useState("");
+
+  const getSonMsg = (msg) => {
+    console.log(msg);
+    setSonMsg(msg);
   };
 
   return (
@@ -96,11 +129,30 @@ function App() {
         {/**表单绑定 */}
         <input
           value={inputValue}
+          ref={inputRef2}
           onChange={(e) => inputChangeVar(e.target.value)}
         ></input>
+        <button onClick={clearInputValueVar}>清空输入框</button>
+        <br></br>
+        {/**获取DOM */}
+        <input type="text" ref={inputRef}></input>
+        <button onClick={addNumVar}>获取dom</button>
+        <br></br>
+        {/**组件通信 */}
+        <div>
+          <Son name={sonMsg}>这是子组件的元素</Son>
+          <Son2 onGetSonMsg={getSonMsg}>这是子组件2的元素</Son2>
+        </div>
       </ul>
     </div>
   );
+
+  function showDOM() {
+    console.log(inputRef);
+    console.dir(inputRef);
+    console.log(inputRef.current);
+    console.dir(inputRef.current);
+  }
 }
 
 function Button() {

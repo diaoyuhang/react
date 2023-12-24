@@ -119,21 +119,91 @@ const [count,setCount] = useState(0)
 
 ## React获取DOM
 
+useRef生成ref对象，绑定到dom标签上
+
+dom可用时，ref.current获取dom，渲染完毕之后dom生成之后才可用
+
+```jsx
+  const inputRef = useRef(null);
+  function showDOM() {
+    console.log(inputRef);
+    console.dir(inputRef);
+    console.log(inputRef.current);
+    console.dir(inputRef.current);
+  }
+
+{/**获取DOM */}
+        <input type="text" ref={inputRef}></input>
+        <button onClick={showDOM}>获取dom</button>
+```
+
+## uuid
+
+```jpx
+npm install uuid
+
+import {v4 as uuidV4} from "uuid"
+
+uuidV4();
+```
+
+## 时间工具
+
+```jpx
+npm install dayjs
+
+dayjs(new Date()).format("YYYY-MM-DD hh:mm:ss");
+```
+
+## 组件通信
+
+1. 父组件传递数据-在子组件标签上绑定属性
+2. 子组件接收数据 -子组件通过props参数接受数据
+3. props是只读对象，不能直接修改，父组件的数据只能由父组件修改
+
+```jsx
+
+function Son(props) {
+  console.log(props.name);
+  return <div>this is Son</div>;
+}
+
+function App() {
+    const [list3, setList3] = useState([{ num: 1 }, { num: 3 }, { num: 2 }]);
+    
+  return (
+   <div>
+          <Son name={list3}></Son>
+        </div>
+  );
+}
+```
+
+**子传父**
+
+在子组件中调用父组件中的函数
+
+```jsx
+function Son2({ onGetSonMsg }) {
+  const msg = "this is son2 message";
+  return (
+    <div>
+      <button onClick={() => onGetSonMsg(msg)}>sendMsg</button>
+    </div>
+  );
+}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+function App() {
+  const getSonMsg = (msg) => {
+    console.log(msg);
+  };
+    
+  return (
+   <Son2 onGetSonMsg={getSonMsg}>这是子组件2的元素</Son2>
+  );
+}
+```
 
 
 
