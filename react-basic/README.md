@@ -209,5 +209,134 @@ function App() {
 
 通过父组件进行兄弟组件之间的数据传递
 
+**Context机制跨层级通信**
+
+1. 使用cretaeContext方法创建一个上下文对象Ctx；
+2. 再顶层组件（App） 中通过Ctx.Provider组件提供数据；
+3. 再底层组件（B）中通过useContext钩子函数获取消费数据；
+
+```jsx
+function A(){
+  return (<div>this is A component <B></B></div>);
+}
+
+function B(){
+  const appMsg = useContext(msgContext)
+  return (<div>this is B component,{appMsg}</div>)
+}
+
+function App() {
+      const appMsg = "this is appMsg";
+  return (
+   <div className="App">
+      <msgContext.Provider value={appMsg}>
+      this is App
+      <A></A>
+      </msgContext.Provider>
+      </div>
+  );
+}
+```
+
+## useEffect的基础使用
+
+需求：在组件渲染完毕之后，立刻从服务端获取频道列表数据并显示到页面中
+
+语法：useEffect(()=>{},[])
+
+```json
+import { useEffect } from "react";
+
+useEffect(() => {
+    async function getList(){
+      const res = await fetch(URL)
+      const jsonRes =await res.json()
+    }
+    getList()
+  },[])
+```
+
+参数1是一个函数，可以把它叫做副作用函数，在函数内部可以放置要执行的操作；
+
+参数2是一个数据（可选参数），在数组放置依赖项，不同依赖项会影响第一个参数函数的执行，当时一个空数组时，函数只会在组件渲染完毕之后执行一次
+
+**用于React组件中创建不是由事件引起而是渲染本身引起的操作**
+
+- 没有传入第二个参数，组件初始化完成，组件发生变化都会执行第一参数函数；
+- 第二个参数函数传入空数组，只会在初始渲染后执行一次；
+- 传入特定依赖项，初始化执行，依赖项变化时执行
+
+## useEffect 清除副作用
+
+在useEffect中编写的由渲染本身引起的对接组件外部的操作，社区也经常把它叫做副作用操作，比如在useEffect中开启一个定时器，我们想在组件卸载时把这个定时器卸载掉，这个过程叫做清理副作用。
+
+**说明：**清除副作用的函数最常见的执行时机是在组件卸载自动执行。
+
+```jsx
+function Son(){
+        useEffect(()=>{
+        const timer= setInterval(()=>{
+            console.log('定时器执行中。。。')
+        },1000);
+            return ()=>{
+                clearInterval(timer);
+            }
+        },[]);
+    return "this is son"
+}
+
+function App(){
+    const [show,setShow] = useState(true);
+    return (
+    <div>
+        {show&&<Son></Son>}
+            <button onClick={()=>setShow(false)></button>
+        </div>
+        
+    )
+}
+```
+
+## 自定义hook函数
+
+```jsx
+function useToogle(){
+    const [value,setValue] =useState(true);
+    const toogle = ()=> setValue(!value);
+    return {value,toolge};
+}
+
+function App(){
+    const {value,toogle} = useToogle();
+    return (
+    	<div>
+        	{value && <div>this is div</div>}
+            <button onclick={toogle}>toogle</button>
+        </div>
+    )
+}
+```
+
+## ReactHook使用规则
+
+使用规则
+
+1. 只能在组件中或者其他自定义Hook函数中调用；
+2. 只能在组件的顶层调用，不能嵌套在if、for、其他函数中
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

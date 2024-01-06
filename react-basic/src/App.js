@@ -1,7 +1,8 @@
 import classnames from "classnames";
 import _ from "lodash";
-import { useRef, useState } from "react";
+import { createContext, useContext, useRef, useState } from "react";
 import "./a.css";
+import { useEffect } from "react";
 
 const num = 9;
 
@@ -38,6 +39,17 @@ function Son2({ onGetSonMsg }) {
       <button onClick={() => onGetSonMsg(msg)}>sendMsg</button>
     </div>
   );
+}
+
+const msgContext = createContext();
+
+function A(){
+  return (<div>this is A component <B></B></div>);
+}
+
+function B(){
+  const appMsg = useContext(msgContext)
+  return (<div>this is B component,{appMsg}</div>)
 }
 
 function App() {
@@ -82,9 +94,28 @@ function App() {
     setSonMsg(msg);
   };
 
+  const appMsg = "this is appMsg";
+
+  // useEffect(() => {
+  //   async function getList(){
+  //     const res = await fetch(URL)
+  //     const jsonRes =await res.json()
+  //   }
+  //   getList()
+  // },[])
+
   return (
     <div className="App">
+
+
+
+
+      <msgContext.Provider value={appMsg}>
       this is App
+      <A></A>
+      </msgContext.Provider>
+      
+
       {/* 使用引号传递字符串*/}
       {"this is message"}
       {/** 识别js变量 */}
