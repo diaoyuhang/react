@@ -5,7 +5,9 @@
   "name": "files",
   "version": "1.0.0",
   "main": "01.fs.js",
-  "devDependencies": {},
+  "devDependencies": {
+    "webpack": "^5.89.0"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
